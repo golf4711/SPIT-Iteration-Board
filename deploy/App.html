@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SpitBoard</title>
+
+    <script type="text/javascript" src="/apps/2.0rc3/sdk.js"></script>
+
+    <script type="text/javascript">
+        Rally.onReady(function () {
+                Ext.define("CustomApp",{extend:"Rally.app.App",componentCls:"app",launch:function(){this.pulldownContainer=Ext.create("Ext.container.Container",{layout:{type:"hbox",align:"stretch"}}),this.add(this.pulldownContainer),this._loadIterations()},_loadIterations:function(){this.iterComboBox=Ext.create("Rally.ui.combobox.IterationComboBox",{fieldLabel:"Iteration",labelAlign:"right",width:300,listeners:{ready:function(combobox){this._loadOwners()},select:function(combobox,records){this._loadData()},scope:this}}),this.pulldownContainer.add(this.iterComboBox)},_loadOwners:function(){this.ownerComboBox=Ext.create("Rally.ui.combobox.UserSearchComboBox",{project:"/project/17290060397",fieldLabel:"Owner",labelAlign:"right",width:300,listeners:{ready:function(combobox){this._loadData()},select:function(combobox,records){this._loadData()},scope:this}}),this.pulldownContainer.add(this.ownerComboBox)},_loadData:function(){var selectedIterRef=this.iterComboBox.getRecord().get("_ref"),selectedOwner=this.ownerComboBox.getRecord().get("_ref"),myFilters=[{property:"Iteration",operation:"=",value:selectedIterRef},{property:"Owner",operation:"=",value:selectedOwner}];this.taskStore?(this.taskStore.setFilter(myFilters),this.taskStore.load()):this.taskStore=Ext.create("Rally.data.wsapi.Store",{model:"Task",autoLoad:!0,filters:myFilters,listeners:{load:function(myStore,myData,success){this.myGrid||this._createGrid(myStore)},scope:this},fetch:["WorkProduct","Name","State","Estimate","ToDo","Blocked"]})},_createGrid:function(myTaskStore){this.myGrid=Ext.create("Rally.ui.grid.Grid",{store:myTaskStore,columnLines:!1,rowLines:!1,title:"Your Tasks by Sprint",width:800,columnCfgs:["WorkProduct","Name","State","Estimate","ToDo","Blocked"]}),this.add(this.myGrid)}});
+
+            Rally.launchApp('CustomApp', {
+                name:"SpitBoard",
+	            parentRepos:""
+            });
+
+        });
+    </script>
+
+
+    <style type="text/css">
+        
+    </style>
+</head>
+<body>
+</body>
+</html>
